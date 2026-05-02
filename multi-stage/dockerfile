@@ -1,0 +1,21 @@
+# stage 1: build 
+
+from node:14 as build-stage
+
+workdir /app
+
+copy package*.json ./
+
+run npm install
+
+copy . .
+
+
+#stage 2: RUN 
+
+from node:14-slim 
+workdir /app
+copy --from=build-stage /app . 
+expose 3000
+env NODE_ENV=production 
+cmd ["node","server.js"]

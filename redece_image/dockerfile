@@ -1,0 +1,23 @@
+# stage 1: Build
+
+from python:3.9-alpine as build
+
+workdir /app
+
+copy requirements.txt .
+
+run pip install --no-cache-dir --prefix=/install -r requirements.txt
+
+copy script.py .
+copy data.csv .
+
+
+# stage 2 : Run 
+
+from python:3.9-alpine
+
+workdir /app
+COPY --from=build /install /usr/local
+copy --from=build /app /app
+
+cmd ["python", "script.py"] 
